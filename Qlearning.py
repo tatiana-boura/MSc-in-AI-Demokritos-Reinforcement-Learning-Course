@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 
 class qLearner:
-    def __init__(self, learning_rate, gamma, epsilon=1):
+    def __init__(self, learning_rate, gamma, epsilon=1.):
         self.agent_type = None
         self.epsilon = epsilon
         self.learning_rate = learning_rate
@@ -73,15 +73,13 @@ class environment:
 
                 if curr_episode == 100 and train:
                     for agent, r,i in zip(game_env.agents, rewards, range(self.num_of_agents)):
-                        #agent.R_history.append(sum(agent.R_history)/(t+1))
                         agent.R_history.append(r/(len(self.get_neighborhood(i))))
 
                 for agent, r, a in zip(self.agents, rewards, actions):
                     agent.update_policy(r, a)
 
-            if train and curr_episode % 100 == 0 and curr_episode != 0:
+            if train and curr_episode % 10 == 0 and curr_episode != 0:
                 for agent in self.agents:
-                    #agent.learning_rate *= 0.8
                     if agent.epsilon >= 0.01:
                         agent.epsilon -= 0.01
 
@@ -97,11 +95,13 @@ class environment:
             plt.plot(list(range(self.num_of_train_episodes + self.num_of_eval_episodes)), action_2, label="action2")
             plt.legend()
             plt.title(f"Q values of agent {i}, type = '{agent.agent_type}'")
+            plt.savefig(f"Q_values_agent_{i}_type_{agent.agent_type}")
             plt.show()
 
             plt.plot(list(range(self.num_of_timesteps)) , agent.R_history)
 
             plt.title(f"Rewards {i}, type = '{agent.agent_type}'")
+            plt.savefig(f"Rewards_{i}_type_{agent.agent_type}")
             plt.show()
 
 
